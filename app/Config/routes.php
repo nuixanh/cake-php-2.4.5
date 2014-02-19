@@ -42,9 +42,10 @@
  */
 
     Router::connect('/rest/signUp', array('controller' => 'restUser', 'action' => 'signUp', '[method]' => 'POST'));
-
-    Router::parseExtensions('json');
+    Router::connect('/rest/login', array('controller' => 'restUser', 'action' => 'login', '[method]' => 'POST'));
 
     Router::connect('/signUp', array('controller' => 'signUp', 'action' => 'signUp', '[method]' => 'GET'));
+
+    Router::parseExtensions('json');
 
 	require CAKE . 'Config' . DS . 'routes.php';
