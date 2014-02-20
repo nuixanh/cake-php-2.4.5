@@ -69,12 +69,10 @@ class RestUserController extends AppController{
             }
         }
 
-//        $data = array('email' => $oData->email, 'password' => $oData->password);
 
 //        Debugger::dump($user);
 //        CakeLog::write('info', $user->toString());
-//        CakeLog::write('debug', 'Something did not work: ' . $user->save());
-//        $user->save();
+
 
         $this->set(array(
             'error_code' => $error_code,
