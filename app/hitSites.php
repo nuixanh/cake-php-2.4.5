@@ -52,13 +52,13 @@ if ($db_found) {
 //        print_r($hits);
         $create = CommonUtil::getMysqlCurrentTime();
         foreach ($hits as $i => $hit) {
-//            $insert_query = "insert INTO hits (id, site_id, url, http_code, connect_time, total_time, primary_ip) VALUES ('"
-//                . String::uuid() . "', '" . $hit->id . "')";
             $insert_query = "insert INTO hits (id, site_id, url, http_code, connect_time, total_time, primary_ip, created) VALUES ('"
                 . String::uuid() . "', '" . $hit->id . "', '" . $hit->url . "', " . $hit->http_code . ", " . $hit->connect_time
                 . ", " . $hit->total_time . ",'". $hit->primary_ip ."','" . $create . "')";
             mysql_query($insert_query);
-            $site_update = "update sites set last_monitor_time = '" . $create . "', next_monitor_time = next_monitor_time + INTERVAL " . $hit->interval . " MINUTE where id = '" . $hit->id ."'";
+            $last_monitor_status = ($hit->http_code == 200 || $hit->http_code == 301)? 1: 0;
+            $site_update = "update sites set last_monitor_time = '" . $create . "', next_monitor_time = next_monitor_time + INTERVAL " . $hit->interval
+                . " MINUTE, last_monitor_status = " . $last_monitor_status . " where id = '" . $hit->id ."'";
             mysql_query($site_update);
         }
     }
