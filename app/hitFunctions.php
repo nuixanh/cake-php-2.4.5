@@ -38,37 +38,19 @@ function multiple_threads_hit($sites)
                     $site->connect_time = $ch_info['connect_time'];
                     $site->total_time = $ch_info['total_time'];
                     $site->primary_ip = $ch_info['primary_ip'];
-//                    $site->connect_time = curl_getinfo($info['handle'],CURLINFO_CONNECT_TIME);
-//                    $site->response_time = curl_getinfo($info['handle'],CURLINFO_TOTAL_TIME);
                 }
             }
 //            echo curl_getinfo($info['handle'],CURLINFO_EFFECTIVE_URL) . "\n";
 //            echo curl_getinfo($info['handle'],CURLINFO_TOTAL_TIME ) . " seconds \n";
         }
     } while ($running > 0);
-//    echo "-------------------------\n";
 
     foreach ($sites as $i => $url) {
         curl_multi_remove_handle($mh, $curl_array[$i]);
     }
 
     curl_multi_close($mh);
-//    echo "+++++++++++++++++++ \n";
     return $sites;
 }
-//multiple_threads_request(array(
-//    'http://thethao.vnexpress.net/',
-//    'http://nld.com.vn/',
-//    'http://abc.com.vn',
-//));
-//print_r(multiple_threads_request(array(
-//    'http://thethao.vnexpress.net/',
-//    'http://nld.com.vn/',
-////    'http://abctt.com.vn',
-//)));
-//$now = new DateTime('now', new DateTimeZone('Asia/Saigon'));
-//echo $now->getTimestamp();
 //$r=dns_get_record('abctt.com.vn');
-//print_r($r);
-//$r=dns_get_record('nld.com.vn');
 //print_r($r);
