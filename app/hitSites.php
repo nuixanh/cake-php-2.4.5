@@ -6,13 +6,13 @@
  * Time: 9:41 AM
  * To change this template use File | Settings | File Templates.
  */
-include_once "hitFunctions.php";
-include_once "Common/CommonUtil.php";
-include_once "../lib/Cake/basics.php";
-include_once "../lib/Cake/Core/App.php";
-include_once "../lib/Cake/Core/Configure.php";
-include_once "../lib/Cake/Utility/Hash.php";
-include_once "../lib/Cake/Utility/String.php";
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "hitFunctions.php";
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "Common/CommonUtil.php";
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/basics.php";
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/Core/App.php";
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/Core/Configure.php";
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/Utility/Hash.php";
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/Utility/String.php";
 
 
 $user_name = "sitemon";
