@@ -18,7 +18,7 @@ include_once "../lib/Cake/Utility/String.php";
 $user_name = "sitemon";
 $password = "s!i@t#emon";
 $database = "sitemon";
-$server = "127.0.0.1";
+$server = "db";
 
 $no_of_threads = 10;
 
