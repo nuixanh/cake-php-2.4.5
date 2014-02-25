@@ -8,6 +8,7 @@
  */
 
 App::uses('User', 'Model');
+App::uses('UserSession', 'Model');
 App::uses('ErrorCode', 'Common');
 
 class RestUserController extends AppController{
@@ -26,12 +27,18 @@ class RestUserController extends AppController{
         if(empty($old_user)){
             $error_code = ErrorCode::FAILURE;
         }else{
-            $error_code = ErrorCode::SUCCESS;
             $user_id = $old_user['User']['id'];
-            $session_id = String::uuid();
             $user->read(null, $user_id);
+
+            $user_session = new UserSession();
+            $user_session->set('user_id', $user_id);
+            $user_session->save();
+//            $session_id = String::uuid();
+            $session_id = $user_session->id;
             $user->set('last_session', $session_id);
             $user->save();
+//            CakeLog::write('info', print_r($user_session, true));
+            $error_code = ErrorCode::SUCCESS;
         }
         $this->set(array(
             'error_code' => $error_code,
