@@ -45,6 +45,7 @@
     Router::connect('/rest/login', array('controller' => 'restUser', 'action' => 'login', '[method]' => 'POST'));
     Router::connect('/rest/updateSite', array('controller' => 'restSite', 'action' => 'save', '[method]' => 'POST'));
     Router::connect('/rest/listSite', array('controller' => 'restSite', 'action' => 'listSite', '[method]' => 'GET'));
+    Router::connect('/rest/listSiteReport', array('controller' => 'restSite', 'action' => 'listHits', '[method]' => 'GET'));
 
     Router::connect('/signUp', array('controller' => 'signUp', 'action' => 'signUp', '[method]' => 'GET'));
 

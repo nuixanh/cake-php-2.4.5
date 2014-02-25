@@ -8,6 +8,7 @@
  */
 App::uses('User', 'Model');
 App::uses('Site', 'Model');
+App::uses('Hit', 'Model');
 App::uses('ErrorCode', 'Common');
 App::uses('AuthUtil', 'Common');
 App::uses('CommonUtil', 'Common');
@@ -33,6 +34,38 @@ class RestSiteController extends AppController{
             'error_code' => $error_code,
             'data' => $site_list,
             '_serialize' => array('error_code', 'data')
+        ));
+    }
+
+    public function listHits() {
+        $error_code = ErrorCode::FAILURE;
+        $user_id = $this->request->query('user_id');
+        $session_id = $this->request->query('session_id');
+        $site_id = $this->request->query('site_id');
+        $hit = new Hit();
+        $hit_list= array();
+        $avg = 0;
+        if(AuthUtil::isValidSession($user_id, $session_id) !== true){
+            $error_code = ErrorCode::INVALID_SESSION;
+        }else{
+            $hit_list = $hit->find('all', array(
+                'conditions' => array('Hit.site_id' => $site_id),
+                'fields' => array('Hit.total_time, Hit.created'),
+                'order' => array('Hit.created'),
+            ));
+            if(!empty($hit_list)){
+                foreach ($hit_list as $hit) {
+                    $avg+=$hit['Hit']['total_time'];
+                }
+                $avg=$avg/count($hit_list);
+            }
+            $error_code = ErrorCode::SUCCESS;
+        }
+        $this->set(array(
+            'error_code' => $error_code,
+            'data' => $hit_list,
+            'avg' => $avg,
+            '_serialize' => array('error_code', 'avg', 'data')
         ));
     }
     public function save() {
