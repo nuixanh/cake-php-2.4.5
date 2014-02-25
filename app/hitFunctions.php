@@ -15,8 +15,8 @@ function multiple_threads_hit($sites)
     foreach ($sites as $i => $site) {
         $curl_array[$i] = curl_init($site->url);
         curl_setopt($curl_array[$i], CURLOPT_RETURNTRANSFER, 1);//return the transfer as a string of the return value instead of outputting it out directly.
-        curl_setopt($curl_array[$i], CURLOPT_TIMEOUT, 5);//The maximum number of seconds to allow cURL functions to execute.
-        curl_setopt($curl_array[$i], CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($curl_array[$i], CURLOPT_TIMEOUT, 15);//The maximum number of seconds to allow cURL functions to execute.
+        curl_setopt($curl_array[$i], CURLOPT_CONNECTTIMEOUT, 15);
         //curl_setopt($curl_array[$i], CURLOPT_VERBOSE, 1);
         curl_multi_add_handle($mh, $curl_array[$i]);//Add a normal cURL handle to a cURL multi handle
     }
