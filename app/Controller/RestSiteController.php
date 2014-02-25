@@ -43,19 +43,24 @@ class RestSiteController extends AppController{
         $session_id = $this->request->query('session_id');
         $site_id = $this->request->query('site_id');
         $hit = new Hit();
-        $hit_list= array();
+        $data= array();
         $avg = 0;
         if(AuthUtil::isValidSession($user_id, $session_id) !== true){
             $error_code = ErrorCode::INVALID_SESSION;
         }else{
             $hit_list = $hit->find('all', array(
                 'conditions' => array('Hit.site_id' => $site_id),
-                'fields' => array('Hit.total_time, Hit.created'),
+                'fields' => array('Hit.http_code, Hit.total_time, Hit.created'),
                 'order' => array('Hit.created'),
             ));
             if(!empty($hit_list)){
                 foreach ($hit_list as $hit) {
                     $avg+=$hit['Hit']['total_time'];
+                    $h = new stdClass();
+                    $h->response_time = $hit['Hit']['total_time'];
+                    $h->created = $hit['Hit']['created'];
+                    $h->success = ($hit['Hit']['http_code'] == 200 || $hit['Hit']['http_code'] == 301)? true:false;
+                    array_push($data, $h);
                 }
                 $avg=$avg/count($hit_list);
             }
@@ -63,7 +68,7 @@ class RestSiteController extends AppController{
         }
         $this->set(array(
             'error_code' => $error_code,
-            'data' => $hit_list,
+            'data' => $data,
             'avg' => $avg,
             '_serialize' => array('error_code', 'avg', 'data')
         ));
