@@ -60,7 +60,7 @@ class RestSiteController extends AppController{
                     $h = new stdClass();
                     $h->response_time = $hit['Hit']['total_time'];
                     $h->created = $hit['Hit']['created'];
-                    $h->success = ($hit['Hit']['http_code'] == 200 || $hit['Hit']['http_code'] == 301)? true:false;
+                    $h->success = $hit['Hit']['http_code'] == 200 ? true:false;
                     array_push($data, $h);
                 }
                 $avg=$avg/count($hit_list);
