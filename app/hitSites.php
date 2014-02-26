@@ -67,10 +67,10 @@ if ($db_found) {
 //                $last_monitor_status = ($hit->http_code == 200 || $hit->http_code == 301)? 1: 0;
                 $last_monitor_status = $hit->http_code == 200 ? 1: 0;
 
-//                $site_update = "update sites set last_monitor_time = '" . $create . "', next_monitor_time = next_monitor_time + INTERVAL " . $hit->interval
-//                    . " MINUTE, last_monitor_status = " . $last_monitor_status . ", last_response_time = " . $hit->total_time . " where id = '" . $hit->id ."'";
-                $site_update = "update sites set last_monitor_time = '" . $create . "', next_monitor_time = next_monitor_time + INTERVAL " . 1
+                $site_update = "update sites set last_monitor_time = '" . $create . "', next_monitor_time = next_monitor_time + INTERVAL " . $hit->interval
                     . " MINUTE, last_monitor_status = " . $last_monitor_status . ", last_response_time = " . $hit->total_time . " where id = '" . $hit->id ."'";
+//                $site_update = "update sites set last_monitor_time = '" . $create . "', next_monitor_time = next_monitor_time + INTERVAL " . 1
+//                    . " MINUTE, last_monitor_status = " . $last_monitor_status . ", last_response_time = " . $hit->total_time . " where id = '" . $hit->id ."'";
                 mysql_query($site_update);
             }
             print "\n\n";
