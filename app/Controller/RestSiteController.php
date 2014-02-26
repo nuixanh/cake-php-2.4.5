@@ -49,7 +49,7 @@ class RestSiteController extends AppController{
             $error_code = ErrorCode::INVALID_SESSION;
         }else{
             $hit_list = $hit->find('all', array(
-                'conditions' => array('Hit.site_id' => $site_id),
+                'conditions' => array('Hit.site_id' => $site_id, 'Hit.created > ' => CommonUtil::getMysqlCurrentTimeWithInterval(0 - 60 * 24 * 7)),
                 'fields' => array('Hit.http_code, Hit.total_time, Hit.created'),
                 'order' => array('Hit.created'),
             ));

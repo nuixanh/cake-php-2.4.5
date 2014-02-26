@@ -43,7 +43,11 @@ class CommonUtil
     }
     public static function getMysqlCurrentTimeWithInterval($interval){
         $now = new DateTime('now', new DateTimeZone('Asia/Saigon'));
-        $now->add(new DateInterval('PT' . $interval . 'M'));
+        if($interval > 0){
+            $now->add(new DateInterval('PT' . $interval . 'M'));
+        }else{
+            $now->sub(new DateInterval('PT' . (0 - $interval) . 'M'));
+        }
         return $now->format('Y-m-d H:i:s');
     }
 }
