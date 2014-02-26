@@ -10,6 +10,7 @@ App::uses('User', 'Model');
 App::uses('Site', 'Model');
 App::uses('Hit', 'Model');
 App::uses('ErrorCode', 'Common');
+App::uses('Constants', 'Common');
 App::uses('AuthUtil', 'Common');
 App::uses('CommonUtil', 'Common');
 
@@ -96,6 +97,20 @@ class RestSiteController extends AppController{
         }else if(AuthUtil::isValidSession($user_id, $session_id) !== true){
             $error_code = ErrorCode::INVALID_SESSION;
         }else{
+            $user = new User();
+            $existed_user = $user->find('first', array(
+                'conditions' => array('User.id' => $user_id)
+            ));
+            $account_type = $existed_user['User']['account_type'];
+            $site_count = $site->find('count', array(
+                'conditions' => array('Site.user_id' => $user_id)
+            ));
+//            CakeLog::write('info', print_r($existed_user, true));
+//            CakeLog::write('info', $site_count);
+//            CakeLog::write('info', $account_type);
+            if($account_type == Constants::FREE_ACCOUNT_TYPE && $site_count > Constants::SITE_MAXIMUM_4_FREE_ACCOUNT){
+                $error_code = ErrorCode::OVER_SITE_QUOTA;
+            }
             if(empty($site_id)){
                 $site_id = String::uuid();
                 $site->set('user_id', $user_id);
@@ -109,7 +124,7 @@ class RestSiteController extends AppController{
                     $error_code = ErrorCode::NO_EXISTED_SITE;
                 }
             }
-            if($error_code !== ErrorCode::NO_EXISTED_SITE){
+            if($error_code !== ErrorCode::NO_EXISTED_SITE && $error_code !== ErrorCode::OVER_SITE_QUOTA){
                 $site->set('name', $name);
                 $site->set('url', $valid_url);
                 $site->set('active', $active);

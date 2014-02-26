@@ -18,6 +18,7 @@ final class ErrorCode {
     const INVALID_PASSWORD = 102;
     const NO_EXISTED_SITE = 103;
     const INVALID_URL = 104;
+    const OVER_SITE_QUOTA = 105;
     static public $__names = array(
         -99 => 'EXCEPTION',
         -1 => 'FAILURE',
