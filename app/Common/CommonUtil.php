@@ -7,6 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
+App::uses('Constants', 'Common');
 class CommonUtil
 {
     public static function toValidURL($text)
@@ -38,11 +39,21 @@ class CommonUtil
         return $surl;
     }
     public static function getMysqlCurrentTime(){
-        $now = new DateTime('now', new DateTimeZone('Asia/Saigon'));
+        $now = new DateTime('now', new DateTimeZone(Constants::DEFAULT_TIMEZONE));
         return $now->format('Y-m-d H:i:s');
     }
+    public static function getTimezoneName($offset){
+        $tz = timezone_name_from_abbr(null, $offset * 3600, true);
+        if ($tz === false) {
+            $tz = timezone_name_from_abbr(null, $offset * 3600, false);
+        }
+        if ($tz === false) {
+            $tz = null;
+        }
+        return $tz;
+    }
     public static function getMysqlCurrentTimeWithInterval($interval){
-        $now = new DateTime('now', new DateTimeZone('Asia/Saigon'));
+        $now = new DateTime('now', new DateTimeZone(Constants::DEFAULT_TIMEZONE));
         if($interval > 0){
             $now->add(new DateInterval('PT' . $interval . 'M'));
         }else{

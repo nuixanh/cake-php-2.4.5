@@ -9,6 +9,7 @@
 App::uses('User', 'Model');
 App::uses('Site', 'Model');
 App::uses('Hit', 'Model');
+App::uses('CakeTime', 'Utility');
 App::uses('ErrorCode', 'Common');
 App::uses('Constants', 'Common');
 App::uses('AuthUtil', 'Common');
@@ -39,13 +40,21 @@ class RestSiteController extends AppController{
     }
 
     public function listHits() {
-        $error_code = ErrorCode::FAILURE;
         $user_id = $this->request->query('user_id');
         $session_id = $this->request->query('session_id');
         $site_id = $this->request->query('site_id');
+        $utc_offset = $this->request->query('utcoffset');
         $hit = new Hit();
         $data= array();
         $avg = 0;
+        if(empty($utc_offset)){
+            $utc_offset = 0;
+        }
+        $timezoneName = CommonUtil::getTimezoneName($utc_offset);
+        if($timezoneName == null){
+            $timezoneName = Constants::DEFAULT_TIMEZONE;
+        }
+        CakeLog::write('info', $timezoneName);
         if(AuthUtil::isValidSession($user_id, $session_id) !== true){
             $error_code = ErrorCode::INVALID_SESSION;
         }else{
@@ -60,6 +69,13 @@ class RestSiteController extends AppController{
                     $h = new stdClass();
                     $h->response_time = $hit['Hit']['total_time'];
                     $h->created = $hit['Hit']['created'];
+                    $original = new DateTime($h->created, new DateTimeZone(Constants::DEFAULT_TIMEZONE));
+                    $original->setTimezone(new DateTimezone($timezoneName));
+                    //var_dump($original);
+                    $h->created = date_format($original, "Y-m-d H:i:s");
+//                    CakeLog::write('info', var_dump($original));
+//                    CakeLog::write('info', date_format($original, "Y-m-d H:i:s") . "\t\t " . date_format($modified, "Y-m-d H:i:s"));
+//                    CakeLog::write('info', "convert time = " . CakeTime::convert(new DateTime($h->created), new DateTimeZone($timezoneName)));
                     $h->success = $hit['Hit']['http_code'] == 200 ? true:false;
                     array_push($data, $h);
                 }
@@ -115,7 +131,7 @@ class RestSiteController extends AppController{
                 $site_id = String::uuid();
                 $site->set('user_id', $user_id);
                 $site->set('last_monitor_status', -1);
-                $now = new DateTime('now', new DateTimeZone('Asia/Saigon'));
+                $now = new DateTime('now', new DateTimeZone(Constants::DEFAULT_TIMEZONE));
                 $next_monitor = $now->add(new DateInterval('PT' . $interval . 'M'));
                 $site->set('next_monitor_time', $next_monitor->format('Y-m-d H:i:s'));
             }else{
