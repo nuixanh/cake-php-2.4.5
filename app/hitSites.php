@@ -7,12 +7,13 @@
  * To change this template use File | Settings | File Templates.
  */
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "hitFunctions.php";
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "Common/CommonUtil.php";
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/basics.php";
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/Core/App.php";
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/Core/Configure.php";
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/Utility/Hash.php";
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "../lib/Cake/Utility/String.php";
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "Common/Constants.php";
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "Common/CommonUtil.php";
 
 
 $user_name = "sitemon";
@@ -27,7 +28,7 @@ $db_found = mysql_select_db($database, $db_handle);
 
 if ($db_found) {
 
-    $now = new DateTime('now', new DateTimeZone('Asia/Saigon'));
+    $now = new DateTime('now', new DateTimeZone(Constants::DEFAULT_TIMEZONE));
     $from = $now->format('Y-m-d H:i:s');
     $now->add(new DateInterval('PT60M'));
     $to = $now->format('Y-m-d H:i:s');
