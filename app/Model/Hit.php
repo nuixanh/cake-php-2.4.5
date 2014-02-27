@@ -10,4 +10,11 @@ App::uses('AppModel', 'Model');
 class Hit extends AppModel{
     public $name = 'Hit';
 
+//    public $belongsTo = array(
+//        'Site' => array(
+//            'className' => 'Site',
+//            'foreignKey' => 'site_id'
+//        )
+//    );
+
 }

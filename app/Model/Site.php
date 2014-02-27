@@ -12,5 +12,9 @@ App::uses('AppModel', 'Model');
 class Site extends AppModel{
     public $name = 'Site';
     public $validate = array('name' => 'notEmpty', 'url' => 'notEmpty');
-
+//    public $hasMany = array(
+//        'Hit' => array(
+//            'className' => 'Hit',
+//        )
+//    );
 }

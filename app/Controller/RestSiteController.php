@@ -18,6 +18,24 @@ App::uses('CommonUtil', 'Common');
 class RestSiteController extends AppController{
     public $components = array('RequestHandler');
 
+    public function deleteSite() {
+        $error_code = ErrorCode::FAILURE;
+        $user_id = $this->request->query('user_id');
+        $session_id = $this->request->query('session_id');
+        $site_id = $this->request->query('site_id');
+        $site = new Site();
+
+        if(AuthUtil::isValidSession($user_id, $session_id) !== true){
+            $error_code = ErrorCode::INVALID_SESSION;
+        }else{
+            $site->delete($site_id, true);
+            $error_code = ErrorCode::SUCCESS;
+        }
+        $this->set(array(
+            'error_code' => $error_code,
+            '_serialize' => array('error_code')
+        ));
+    }
     public function listSite() {
         $error_code = ErrorCode::FAILURE;
         $user_id = $this->request->query('user_id');
