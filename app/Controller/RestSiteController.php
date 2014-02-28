@@ -148,6 +148,7 @@ class RestSiteController extends AppController{
             if(empty($site_id)){
                 $site_id = String::uuid();
                 $site->set('user_id', $user_id);
+                $site->set('active', true);
                 $site->set('last_monitor_status', -1);
                 $now = new DateTime('now', new DateTimeZone(Constants::DEFAULT_TIMEZONE));
                 $next_monitor = $now->add(new DateInterval('PT' . $interval . 'M'));
@@ -156,12 +157,13 @@ class RestSiteController extends AppController{
                 $r_site = $site->find(null, $site_id);
                 if(empty($r_site)){
                     $error_code = ErrorCode::NO_EXISTED_SITE;
+                }else{
+                    $site->set('active', $active);
                 }
             }
             if($error_code !== ErrorCode::NO_EXISTED_SITE && $error_code !== ErrorCode::OVER_SITE_QUOTA){
                 $site->set('name', $name);
                 $site->set('url', $valid_url);
-                $site->set('active', $active);
                 $site->set('interval', $interval);
                 $site->save();
                 $error_code = ErrorCode::SUCCESS;
