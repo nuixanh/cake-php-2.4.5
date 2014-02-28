@@ -58,14 +58,15 @@ $mm_url = "http://$mm_adserver/getAd.php5?apid=$mm_placementid&auid="
 #echo $mm_response != FALSE ? $mm_response : $mm_default_response;
 /*--------- End Ad Call ----------*/
 ?>
-
+<div id="adContainer"></div>
+<script src="http://cdn.millennialmedia.com/mmadlib/v1/mmadlib.js"></script>
 <script>
     window.mmAPI.placeAd({
         containerElementId: "adContainer",
         apid: "153511",
         placementType: "inline",
-        width: 728,
-        height: 90,
+        width: 320,
+        height: 50,
         allowLocation: true
     }, function(adFilled) {
         //adFilled will be true if the ad fills, else it will be false
