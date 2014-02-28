@@ -79,7 +79,7 @@ class RestSiteController extends AppController{
             $hit_list = $hit->find('all', array(
                 'conditions' => array('Hit.site_id' => $site_id, 'Hit.created > ' => CommonUtil::getMysqlCurrentTimeWithInterval(0 - 60 * 24 * 7)),
                 'fields' => array('Hit.http_code, Hit.total_time, Hit.created'),
-                'order' => array('Hit.created'),
+                'order' => array('Hit.created DESC'),
             ));
             if(!empty($hit_list)){
                 foreach ($hit_list as $hit) {
