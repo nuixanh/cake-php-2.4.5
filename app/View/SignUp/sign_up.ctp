@@ -53,8 +53,24 @@ $mm_url = "http://$mm_adserver/getAd.php5?apid=$mm_placementid&auid="
 <?php
 /* Place this code block where you want the ad to appear */
 /*------- Reusable Ad Call -------*/
-echo $mm_url;
+#echo $mm_url;
 @$mm_response = file_get_contents($mm_url);
-echo $mm_response != FALSE ? $mm_response : $mm_default_response;
+#echo $mm_response != FALSE ? $mm_response : $mm_default_response;
 /*--------- End Ad Call ----------*/
 ?>
+
+<script>
+    window.mmAPI.placeAd({
+        containerElementId: "adContainer",
+        apid: "153511",
+        placementType: "inline",
+        width: 728,
+        height: 90,
+        allowLocation: true
+    }, function(adFilled) {
+        //adFilled will be true if the ad fills, else it will be false
+        console.log("was the ad filled: " + adFilled);
+        if (adFilled) {
+        }
+    });
+</script>
