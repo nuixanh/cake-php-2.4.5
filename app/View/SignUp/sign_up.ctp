@@ -53,6 +53,7 @@ $mm_url = "http://$mm_adserver/getAd.php5?apid=$mm_placementid&auid="
 <?php
 /* Place this code block where you want the ad to appear */
 /*------- Reusable Ad Call -------*/
+echo $mm_url;
 @$mm_response = file_get_contents($mm_url);
 echo $mm_response != FALSE ? $mm_response : $mm_default_response;
 /*--------- End Ad Call ----------*/
