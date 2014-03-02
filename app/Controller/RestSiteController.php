@@ -190,7 +190,8 @@ class RestSiteController extends AppController{
         }
         $this->set(array(
             'error_code' => $error_code,
-            '_serialize' => array('error_code')
+            'site_id' => $site->id,
+            '_serialize' => array('error_code', 'site_id')
         ));
     }
 
