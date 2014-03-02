@@ -14,6 +14,7 @@ App::uses('ErrorCode', 'Common');
 App::uses('Constants', 'Common');
 App::uses('AuthUtil', 'Common');
 App::uses('CommonUtil', 'Common');
+App::uses('HitUtil', 'Common');
 
 class RestSiteController extends AppController{
     public $components = array('RequestHandler');
@@ -145,14 +146,11 @@ class RestSiteController extends AppController{
             if($account_type == Constants::FREE_ACCOUNT_TYPE && $site_count > Constants::SITE_MAXIMUM_4_FREE_ACCOUNT){
                 $error_code = ErrorCode::OVER_SITE_QUOTA;
             }
+            $is_new_site = false;
             if(empty($site_id)){
-                $site_id = String::uuid();
+                $is_new_site = true;
                 $site->set('user_id', $user_id);
                 $site->set('active', true);
-                $site->set('last_monitor_status', -1);
-                $now = new DateTime('now', new DateTimeZone(Constants::DEFAULT_TIMEZONE));
-                $next_monitor = $now->add(new DateInterval('PT' . $interval . 'M'));
-                $site->set('next_monitor_time', $next_monitor->format('Y-m-d H:i:s'));
             }else{
                 $r_site = $site->find(null, $site_id);
                 if(empty($r_site)){
@@ -165,14 +163,34 @@ class RestSiteController extends AppController{
                 $site->set('name', $name);
                 $site->set('url', $valid_url);
                 $site->set('interval', $interval);
-                $site->save();
+                if($is_new_site){
+                    $info = HitUtil::hitSiteByUrl($valid_url);
+                    $site->set('last_monitor_status', $info['http_code'] == 200 ? 1: 0);
+                    $site->set('last_response_time', $info['total_time']);
+                    $site->set('last_monitor_time', CommonUtil::getMysqlCurrentTime());
+                    $site->set('next_monitor_time', CommonUtil::getMysqlCurrentTimeWithInterval($interval));
+                    $site->save();
+
+                    $hit = new Hit();
+                    $hit->set(array(
+                        'site_id' =>  $site->id,
+                        'url' =>  $valid_url,
+                        'http_code' =>  $info['http_code'],
+                        'connect_time' =>  $info['connect_time'],
+                        'total_time' =>  $info['total_time'],
+                        'primary_ip' =>  $info['primary_ip'],
+                        'redirect' => $info['redirect']
+                    ));
+                    $hit->save();
+                }else{
+                    $site->save();
+                }
                 $error_code = ErrorCode::SUCCESS;
             }
         }
         $this->set(array(
             'error_code' => $error_code,
-            'site_id' => $site_id,
-            '_serialize' => array('error_code', 'site_id')
+            '_serialize' => array('error_code')
         ));
     }
 

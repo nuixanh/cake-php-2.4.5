@@ -11,5 +11,6 @@ final class Constants {
     const SITE_MAXIMUM_4_FREE_ACCOUNT = 3;
     const FREE_ACCOUNT_TYPE = 0;
     const DEFAULT_TIMEZONE = "Asia/Saigon";
+    const CONNECT_TIMEOUT = 15;//seconds
 
 }
