@@ -151,6 +151,10 @@ class RestSiteController extends AppController{
                 $is_new_site = true;
                 $site->set('user_id', $user_id);
                 $site->set('active', true);
+                $site->set('last_monitor_status', -1);
+                $now = new DateTime('now', new DateTimeZone(Constants::DEFAULT_TIMEZONE));
+                $next_monitor = $now->add(new DateInterval('PT' . $interval . 'M'));
+                $site->set('next_monitor_time', $next_monitor->format('Y-m-d H:i:s'));
             }else{
                 $r_site = $site->find(null, $site_id);
                 if(empty($r_site)){
@@ -163,28 +167,29 @@ class RestSiteController extends AppController{
                 $site->set('name', $name);
                 $site->set('url', $valid_url);
                 $site->set('interval', $interval);
-                if($is_new_site){
-                    $info = HitUtil::hitSiteByUrl($valid_url);
-                    $site->set('last_monitor_status', $info['http_code'] == 200 ? 1: 0);
-                    $site->set('last_response_time', $info['total_time']);
-                    $site->set('last_monitor_time', CommonUtil::getMysqlCurrentTime());
-                    $site->set('next_monitor_time', CommonUtil::getMysqlCurrentTimeWithInterval($interval));
-                    $site->save();
-
-                    $hit = new Hit();
-                    $hit->set(array(
-                        'site_id' =>  $site->id,
-                        'url' =>  $valid_url,
-                        'http_code' =>  $info['http_code'],
-                        'connect_time' =>  $info['connect_time'],
-                        'total_time' =>  $info['total_time'],
-                        'primary_ip' =>  $info['primary_ip'],
-                        'redirect' => $info['redirect']
-                    ));
-                    $hit->save();
-                }else{
-                    $site->save();
-                }
+//                if($is_new_site){
+//                    $info = HitUtil::hitSiteByUrl($valid_url);
+//                    $site->set('last_monitor_status', $info['http_code'] == 200 ? 1: 0);
+//                    $site->set('last_response_time', $info['total_time']);
+//                    $site->set('last_monitor_time', CommonUtil::getMysqlCurrentTime());
+//                    $site->set('next_monitor_time', CommonUtil::getMysqlCurrentTimeWithInterval($interval));
+//                    $site->save();
+//
+//                    $hit = new Hit();
+//                    $hit->set(array(
+//                        'site_id' =>  $site->id,
+//                        'url' =>  $valid_url,
+//                        'http_code' =>  $info['http_code'],
+//                        'connect_time' =>  $info['connect_time'],
+//                        'total_time' =>  $info['total_time'],
+//                        'primary_ip' =>  $info['primary_ip'],
+//                        'redirect' => $info['redirect']
+//                    ));
+//                    $hit->save();
+//                }else{
+//                    $site->save();
+//                }
+                $site->save();
                 $error_code = ErrorCode::SUCCESS;
             }
         }
