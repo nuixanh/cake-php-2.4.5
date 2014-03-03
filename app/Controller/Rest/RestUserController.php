@@ -55,7 +55,9 @@ class RestUserController extends AppController{
         $url = $this->request->data('url');
         $device = $this->request->data('device');
         $active = $this->request->data('active');
-        CakeLog::write('tracking', print_r($this->request->data, true));
+
+        $ch_saved = null;
+        CakeLog::write('tracking', $this->request->url . "\n" . print_r($this->request->data, true));
         if(AuthUtil::isValidSession($user_id, $session_id) !== true){
             $error_code = ErrorCode::INVALID_SESSION;
         }else{
@@ -78,11 +80,15 @@ class RestUserController extends AppController{
                 $channel->set('active',$active);
                 $channel->save();
             }
+            $ch_saved = new Channel();
+            $ch_saved->read(null, $channel->id);
             $error_code = ErrorCode::SUCCESS;
         }
         $this->set(array(
             'error_code' => $error_code,
-            '_serialize' => array('error_code')
+            'url' => $ch_saved->data['Channel']['url'],
+            'active' => $ch_saved->data['Channel']['active'],
+            '_serialize' => array('error_code', 'url', 'active')
         ));
     }
     public function signUp() {

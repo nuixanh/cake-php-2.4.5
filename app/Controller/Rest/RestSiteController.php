@@ -118,6 +118,9 @@ class RestSiteController extends AppController{
         $url = $this->request->data('url');
         $active = $this->request->data('active');
         $interval = $this->request->data('interval');
+
+        CakeLog::write('tracking', $this->request->url . "\n" . print_r($this->request->data, true));
+
         $site = new Site();
 
         $valid_url = empty($url) !==true? CommonUtil::toValidURL($url): "";
