@@ -38,7 +38,6 @@ class RestSiteController extends AppController{
         ));
     }
     public function listSite() {
-        $error_code = ErrorCode::FAILURE;
         $user_id = $this->request->query('user_id');
         $session_id = $this->request->query('session_id');
         $site = new Site();
@@ -146,7 +145,7 @@ class RestSiteController extends AppController{
 //            CakeLog::write('info', print_r($existed_user, true));
 //            CakeLog::write('info', $site_count);
 //            CakeLog::write('info', $account_type);
-            if($account_type == Constants::FREE_ACCOUNT_TYPE && $site_count > Constants::SITE_MAXIMUM_4_FREE_ACCOUNT){
+            if(empty($site_id) && $account_type == Constants::FREE_ACCOUNT_TYPE && $site_count > Constants::SITE_MAXIMUM_4_FREE_ACCOUNT){
                 $error_code = ErrorCode::OVER_SITE_QUOTA;
             }
             $is_new_site = false;
