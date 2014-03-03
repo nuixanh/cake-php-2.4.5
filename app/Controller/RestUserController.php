@@ -54,6 +54,7 @@ class RestUserController extends AppController{
         $session_id = $this->request->data('session_id');
         $url = $this->request->data('url');
         $device = $this->request->data('device');
+        $active = $this->request->data('active');
         if(AuthUtil::isValidSession($user_id, $session_id) !== true){
             $error_code = ErrorCode::INVALID_SESSION;
         }else{
@@ -67,12 +68,13 @@ class RestUserController extends AppController{
                     'url' => $url,
                     'device_id' => $device,
                     'platform' => 'WP',
-                    'active' => true
+                    'active' => $active
                 ));
                 $channel->save();
             }else{
                 $channel->read(null, $channel_output['Channel']['id']);
                 $channel->set('url',$url);
+                $channel->set('active',$active);
                 $channel->save();
             }
             $error_code = ErrorCode::SUCCESS;
