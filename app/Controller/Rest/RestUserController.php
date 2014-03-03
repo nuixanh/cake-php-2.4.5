@@ -55,6 +55,7 @@ class RestUserController extends AppController{
         $url = $this->request->data('url');
         $device = $this->request->data('device');
         $active = $this->request->data('active');
+        CakeLog::write('tracking', print_r($this->request->data, true));
         if(AuthUtil::isValidSession($user_id, $session_id) !== true){
             $error_code = ErrorCode::INVALID_SESSION;
         }else{
