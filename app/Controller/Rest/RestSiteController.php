@@ -170,7 +170,8 @@ class RestSiteController extends AppController{
                     $app_dir = dirname(APP) . DS . basename(APP);
                     //cd /full/path/to/app && Console/cake myshell myparam
                     //exec("nohup /usr/bin/php -f sleep.php > /dev/null 2>&1 &");
-                    $cmd = 'nohup cd ' . $app_dir . ' && Console' . DS . 'cake hit hit_one ' . $site->id;
+                    //nohup sh -c './cmd2 >result2 && ./cmd1 >result1' &
+                    $cmd = 'nohup sh -c "cd ' . $app_dir . ' && Console' . DS . 'cake hit hit_one ' . $site->id . '"  > /dev/null 2>&1 &';
                     //echo $cmd;
                     $output = shell_exec($cmd);
                     //echo $output;
