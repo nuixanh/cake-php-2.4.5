@@ -71,13 +71,13 @@ class RestUserController extends AppController{
                     'url' => $url,
                     'device_id' => $device,
                     'platform' => 'WP',
-                    'active' => $active
+                    'active' => CommonUtil::toBoolean($active)
                 ));
                 $channel->save();
             }else{
                 $channel->read(null, $channel_output['Channel']['id']);
                 $channel->set('url',$url);
-                $channel->set('active',$active);
+                $channel->set('active', CommonUtil::toBoolean($active));
                 $channel->save();
             }
             $ch_saved = new Channel();

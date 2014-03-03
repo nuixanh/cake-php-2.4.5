@@ -166,7 +166,7 @@ class RestSiteController extends AppController{
                 if(empty($r_site)){
                     $error_code = ErrorCode::NO_EXISTED_SITE;
                 }else{
-                    $site->set('active', $active);
+                    $site->set('active', CommonUtil::toBoolean($active));
                 }
             }
             if($error_code !== ErrorCode::NO_EXISTED_SITE && $error_code !== ErrorCode::OVER_SITE_QUOTA){

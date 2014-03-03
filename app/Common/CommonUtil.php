@@ -10,6 +10,13 @@
 App::uses('Constants', 'Common');
 class CommonUtil
 {
+    public static function toBoolean($input){
+        if ($input === true || $input === "true" || $input === "True" || $input === 1) {
+            return true;
+        }else{
+            return false;
+        }
+    }
     public static function toValidURL($text)
     {
         $url = parse_url($text);
