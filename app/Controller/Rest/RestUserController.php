@@ -86,8 +86,8 @@ class RestUserController extends AppController{
         }
         $this->set(array(
             'error_code' => $error_code,
-            'url' => $ch_saved->data['Channel']['url'],
-            'active' => $ch_saved->data['Channel']['active'],
+            'url' => $ch_saved != null? $ch_saved->data['Channel']['url']: null,
+            'active' => $ch_saved != null?$ch_saved->data['Channel']['active']: null,
             '_serialize' => array('error_code', 'url', 'active')
         ));
     }
