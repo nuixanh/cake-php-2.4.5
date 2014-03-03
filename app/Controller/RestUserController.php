@@ -10,9 +10,10 @@
 App::uses('User', 'Model');
 App::uses('UserSession', 'Model');
 App::uses('ErrorCode', 'Common');
+App::uses('AuthUtil', 'Common');
 
 class RestUserController extends AppController{
-
+    public $uses = array('User');
     public $components = array('RequestHandler');
 
     public function login() {
@@ -47,8 +48,24 @@ class RestUserController extends AppController{
             '_serialize' => array('error_code', 'user_id', 'session_id')
         ));
     }
+    public function updateWPChannel() {
+        $user_id = $this->request->data('user_id');
+        $session_id = $this->request->data('session_id');
+        $channel = $this->request->data('channel');
+        if(AuthUtil::isValidSession($user_id, $session_id) !== true){
+            $error_code = ErrorCode::INVALID_SESSION;
+        }else{
+            $this->User->read(null,$user_id);
+            $this->User->set('channel', $channel);
+            $this->User->save();
+            $error_code = ErrorCode::SUCCESS;
+        }
+        $this->set(array(
+            'error_code' => $error_code,
+            '_serialize' => array('error_code')
+        ));
+    }
     public function signUp() {
-        $error_code = ErrorCode::FAILURE;
         $email = $this->request->data('email');
         $password = $this->request->data('password');
         if(empty($email) || empty($password)){
