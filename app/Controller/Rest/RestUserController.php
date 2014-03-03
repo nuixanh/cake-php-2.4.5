@@ -64,7 +64,8 @@ class RestUserController extends AppController{
         }else{
             $channel = new Channel();
             $channel_output = $channel->find('first', array(
-                'conditions' => array('Channel.device_id' => $device)
+                'conditions' => array('Channel.device_id' => $device,
+                    'Channel.user_id' => $user_id)
             ));
             if(empty($channel_output)){
                 $channel->set(array(
