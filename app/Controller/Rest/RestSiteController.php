@@ -20,7 +20,6 @@ class RestSiteController extends AppController{
     public $components = array('RequestHandler');
 
     public function deleteSite() {
-        $error_code = ErrorCode::FAILURE;
         $user_id = $this->request->query('user_id');
         $session_id = $this->request->query('session_id');
         $site_id = $this->request->query('site_id');
@@ -124,9 +123,6 @@ class RestSiteController extends AppController{
 
         $valid_url = empty($url) !==true? CommonUtil::toValidURL($url): "";
 
-//        CakeLog::write('info', $user_id . " ");
-//        CakeLog::write('info', $session_id . " ");
-
         if(empty($name) || empty($url) || empty($interval)){
             $error_code = ErrorCode::MISS_PARAM;
         }else if(filter_var($valid_url, FILTER_VALIDATE_URL) === false) {
@@ -145,7 +141,7 @@ class RestSiteController extends AppController{
 //            CakeLog::write('info', print_r($existed_user, true));
 //            CakeLog::write('info', $site_count);
 //            CakeLog::write('info', $account_type);
-            if(empty($site_id) && $account_type == Constants::FREE_ACCOUNT_TYPE && $site_count > Constants::SITE_MAXIMUM_4_FREE_ACCOUNT){
+            if(empty($site_id) && $account_type == Constants::FREE_ACCOUNT_TYPE && $site_count >= Constants::SITE_MAXIMUM_4_FREE_ACCOUNT){
                 $error_code = ErrorCode::OVER_SITE_QUOTA;
             }
             $is_new_site = false;
@@ -158,9 +154,6 @@ class RestSiteController extends AppController{
                 $next_monitor = $now->add(new DateInterval('PT' . $interval . 'M'));
                 $site->set('next_monitor_time', $next_monitor->format('Y-m-d H:i:s'));
             }else{
-//                $r_site = $site->find('first', array(
-//                    'conditions' => array('Site.id' => $site_id)
-//                ));
                 $r_site = $site->read(null, $site_id);
                 if(empty($r_site)){
                     $error_code = ErrorCode::NO_EXISTED_SITE;
@@ -172,29 +165,16 @@ class RestSiteController extends AppController{
                 $site->set('name', $name);
                 $site->set('url', $valid_url);
                 $site->set('interval', $interval);
-//                if($is_new_site){
-//                    $info = HitUtil::hitSiteByUrl($valid_url);
-//                    $site->set('last_monitor_status', $info['http_code'] == 200 ? 1: 0);
-//                    $site->set('last_response_time', $info['total_time']);
-//                    $site->set('last_monitor_time', CommonUtil::getMysqlCurrentTime());
-//                    $site->set('next_monitor_time', CommonUtil::getMysqlCurrentTimeWithInterval($interval));
-//                    $site->save();
-//
-//                    $hit = new Hit();
-//                    $hit->set(array(
-//                        'site_id' =>  $site->id,
-//                        'url' =>  $valid_url,
-//                        'http_code' =>  $info['http_code'],
-//                        'connect_time' =>  $info['connect_time'],
-//                        'total_time' =>  $info['total_time'],
-//                        'primary_ip' =>  $info['primary_ip'],
-//                        'redirect' => $info['redirect']
-//                    ));
-//                    $hit->save();
-//                }else{
-//                    $site->save();
-//                }
                 $site->save();
+                if($is_new_site){
+                    $app_dir = dirname(APP) . DS . basename(APP);
+                    //cd /full/path/to/app && Console/cake myshell myparam
+                    //exec("nohup /usr/bin/php -f sleep.php > /dev/null 2>&1 &");
+                    $cmd = 'cd ' . $app_dir . ' && Console' . DS . 'cake hit hit_one ' . $site->id;
+                    echo $cmd;
+                    $output = shell_exec($cmd);
+                    echo $output;
+                }
                 $error_code = ErrorCode::SUCCESS;
             }
         }
