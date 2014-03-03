@@ -156,9 +156,10 @@ class RestSiteController extends AppController{
                 $next_monitor = $now->add(new DateInterval('PT' . $interval . 'M'));
                 $site->set('next_monitor_time', $next_monitor->format('Y-m-d H:i:s'));
             }else{
-                $r_site = $site->find('first', array(
-                    'conditions' => array('Site.id' => $site_id)
-                ));
+//                $r_site = $site->find('first', array(
+//                    'conditions' => array('Site.id' => $site_id)
+//                ));
+                $r_site = $site->read(null, $site_id);
                 if(empty($r_site)){
                     $error_code = ErrorCode::NO_EXISTED_SITE;
                 }else{
