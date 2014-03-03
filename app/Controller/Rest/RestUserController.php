@@ -12,6 +12,7 @@ App::uses('UserSession', 'Model');
 App::uses('Channel', 'Model');
 App::uses('ErrorCode', 'Common');
 App::uses('AuthUtil', 'Common');
+App::uses('CommonUtil', 'Common');
 
 class RestUserController extends AppController{
     public $uses = array('User');
