@@ -9,6 +9,7 @@
 
 App::uses('HitUtil', 'Common');
 App::uses('CommonUtil', 'Common');
+App::uses('CakeLog', 'Log');
 App::uses('WindowsPhonePushNotification', 'Common');
 
 class HitShell extends AppShell
@@ -40,10 +41,10 @@ class HitShell extends AppShell
         $this->Hit->set(array(
             'site_id' => $site_id,
             'url' => $url,
-            'http_code' => $info['http_code'],
-            'connect_time' => $info['connect_time'],
-            'total_time' => $info['total_time'],
-            'primary_ip' => $info['primary_ip'],
+            'http_code' => $info['http_code'] != null? $info['http_code'] : 0,
+            'connect_time' => $info['connect_time'] != null? $info['connect_time'] : 0,
+            'total_time' => $info['total_time'] != null? $info['total_time'] : 0,
+            'primary_ip' => $info['primary_ip'] != null? $info['primary_ip'] : 0,
             'redirect' => $info['redirect']
         ));
         $this->Hit->save();
@@ -54,6 +55,7 @@ class HitShell extends AppShell
             foreach ($channels as $channel) {
                 $ch_url = $channel['Channel']['url'];
                 $notif = new WindowsPhonePushNotification($ch_url);
+                CakeLog::write('info', $ch_url);
                 $notif->push_toast("DOWN site [" . $this->Site->data['Site']['name'] . ']', " - [" . $this->Site->data['Site']['url'] ."]");
             }
         }
