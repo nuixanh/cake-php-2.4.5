@@ -45,7 +45,7 @@ class HitShell extends AppShell
             'connect_time' => $info['connect_time'] != null? $info['connect_time'] : 0,
             'total_time' => $info['total_time'] != null? $info['total_time'] : 0,
             'primary_ip' => $info['primary_ip'] != null? $info['primary_ip'] : 0,
-            'redirect' => $info['redirect']
+            'redirect' => $info['redirect'] != null? $info['redirect'] : 0
         ));
         $this->Hit->save();
         if($info['http_code'] != 200){
