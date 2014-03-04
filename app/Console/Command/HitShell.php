@@ -9,11 +9,12 @@
 
 App::uses('HitUtil', 'Common');
 App::uses('CommonUtil', 'Common');
+App::uses('WindowsPhonePushNotification', 'Common');
 
 class HitShell extends AppShell
 {
 
-    public $uses = array('Site', 'Hit');
+    public $uses = array('Site', 'Hit', 'Channel');
 
     public function main()
     {
@@ -46,5 +47,15 @@ class HitShell extends AppShell
             'redirect' => $info['redirect']
         ));
         $this->Hit->save();
+        if($info['http_code'] != 200){
+            $channels = $this->Channel->find('all', array(
+                'conditions' => array('Channel.user_id' => $this->Site->data['Site']['user_id'])
+            ));
+            foreach ($channels as $channel) {
+                $ch_url = $channel['Channel']['url'];
+                $notif = new WindowsPhonePushNotification($ch_url);
+                $notif->push_toast("DOWN site [" . $this->Site->data['Site']['name'] . ']', " - [" . $this->Site->data['Site']['url'] ."]");
+            }
+        }
     }
 }
