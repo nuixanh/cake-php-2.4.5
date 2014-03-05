@@ -77,7 +77,7 @@ class HitUtil {
                 if($http_code === 301){//re-direct
                     $site = new stdClass();
                     $site->url = $url;
-                    $ch_info = hitRedirectURL($site);
+                    $ch_info = HitUtil::hitRedirectURL($site);
                     $ch_info['redirect'] = 1;
                 }else{
                     $ch_info['redirect'] = 0;
