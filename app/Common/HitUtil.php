@@ -80,6 +80,7 @@ class HitUtil {
                     $ch_info = HitUtil::hitRedirectURL($site);
                     $ch_info['redirect'] = 1;
                 }else if($http_code === 0){//FAIL - check again
+                    usleep(10000);
                     $site = new stdClass();
                     $site->url = $url;
                     $ch_info = HitUtil::hitRedirectURL($site);
