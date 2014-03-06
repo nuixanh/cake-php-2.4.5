@@ -12,8 +12,8 @@ class HitUtil {
     public static function hitRedirectURL($site){
         $ch = curl_init($site->url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 15);//The maximum number of seconds to allow cURL functions to execute.
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_TIMEOUT, Constants::CONNECT_TIMEOUT);//The maximum number of seconds to allow cURL functions to execute.
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, Constants::CONNECT_TIMEOUT);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_exec($ch);
         $info = null;
@@ -60,8 +60,8 @@ class HitUtil {
         foreach ($sites as $i => $site) {
             $curl_array[$i] = curl_init($site->url);
             curl_setopt($curl_array[$i], CURLOPT_RETURNTRANSFER, 1);//return the transfer as a string of the return value instead of outputting it out directly.
-            curl_setopt($curl_array[$i], CURLOPT_TIMEOUT, 15);//The maximum number of seconds to allow cURL functions to execute.
-            curl_setopt($curl_array[$i], CURLOPT_CONNECTTIMEOUT, 15);
+            curl_setopt($curl_array[$i], CURLOPT_TIMEOUT, Constants::CONNECT_TIMEOUT);//The maximum number of seconds to allow cURL functions to execute.
+            curl_setopt($curl_array[$i], CURLOPT_CONNECTTIMEOUT, Constants::CONNECT_TIMEOUT);
             curl_multi_add_handle($mh, $curl_array[$i]);//Add a normal cURL handle to a cURL multi handle
         }
         $running = NULL;
@@ -79,6 +79,11 @@ class HitUtil {
                     $site->url = $url;
                     $ch_info = HitUtil::hitRedirectURL($site);
                     $ch_info['redirect'] = 1;
+                }else if($http_code === 0){//FAIL - check again
+                    $site = new stdClass();
+                    $site->url = $url;
+                    $ch_info = HitUtil::hitRedirectURL($site);
+                    $ch_info['redirect'] = 0;
                 }else{
                     $ch_info['redirect'] = 0;
                 }
