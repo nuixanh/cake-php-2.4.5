@@ -96,6 +96,7 @@ class RestUserController extends AppController{
     public function signUp() {
         $email = $this->request->data('email');
         $password = $this->request->data('password');
+        CakeLog::write('signUp', $this->request->url . "\n" . print_r($this->request->data, true));
         if(empty($email) || empty($password)){
             $error_code = ErrorCode::MISS_PARAM;
         }else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
@@ -120,11 +121,6 @@ class RestUserController extends AppController{
                 $error_code = ErrorCode::EXISTED_EMAIL;
             }
         }
-
-
-//        Debugger::dump($user);
-//        CakeLog::write('info', $user->toString());
-
 
         $this->set(array(
             'error_code' => $error_code,

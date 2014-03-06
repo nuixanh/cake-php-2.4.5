@@ -36,7 +36,6 @@ class HitShell extends AppShell
             $this->Site->save();
         }
 
-        $sites=array();
         $arr_of_arr=array();
         $total=0;
         $i=0;
@@ -86,8 +85,23 @@ class HitShell extends AppShell
 //                        . String::uuid() . "', '" . $hit->id . "', '" . $hit->url . "', " . $hit->http_code . ", " . $hit->connect_time
 //                        . ", " . $hit->total_time . ",'". $hit->primary_ip ."','" . $create . "'," . $hit->redirect . ")";
 //                    mysql_query($insert_query);
-                    $last_monitor_status = property_exists($hit,'http_code') && $hit->http_code == 200 ? 1: 0;
                     $this->Site->read(null, $hit->id);
+                    if(property_exists($hit,'http_code') && $hit->http_code == 200){
+                        $last_monitor_status = 1;
+                    }else{
+                        $user_id = $this->Site->data['Site']['user_id'];
+                        $site_name = $this->Site->data['Site']['name'];
+                        $last_monitor_status = 0;
+                        $channels = $this->Channel->find('all', array(
+                            'conditions' => array('Channel.user_id' => $user_id)
+                        ));
+                        foreach ($channels as $channel) {
+                            $ch_url = $channel['Channel']['url'];
+                            $notif = new WindowsPhonePushNotification($ch_url);
+                            $this->out('Channel URL: ' . $ch_url);
+                            $notif->push_toast("DOWN site [" . $site_name . ']', "[" . $hit->url ."]");
+                        }
+                    }
 //                    print $this->Site->data['Site']['next_monitor_time'];
                     $nowUtc = new DateTime($this->Site->data['Site']['next_monitor_time'],  new DateTimeZone(Constants::DEFAULT_TIMEZONE));
                     $nowUtc->add(new DateInterval('PT' . $this->Site->data['Site']['interval'] . 'M'));
