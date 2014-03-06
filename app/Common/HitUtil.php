@@ -88,7 +88,7 @@ class HitUtil {
                         $site->http_code = $ch_info['http_code'];
                         $site->connect_time = $ch_info['connect_time'];
                         $site->total_time = $ch_info['total_time'];
-                        $site->primary_ip = $ch_info['primary_ip'];
+                        $site->primary_ip = isset($ch_info['primary_ip'])? $ch_info['primary_ip'] : 0;
                         $site->redirect = $ch_info['redirect'];
                     }
                 }
